@@ -3,6 +3,8 @@ package com.trkgames.convidadosudemy.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.trkgames.convidadosudemy.model.GuestModel
 import com.trkgames.convidadosudemy.viewmodel.GuestFormViewModel
@@ -14,6 +16,8 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityGuestFormBinding
     private lateinit var viewModel: GuestFormViewModel
+
+    private var guestId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +31,8 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         binding.buttonSave.setOnClickListener(this)
 
 
+        observe()
+
         loadData()
 
 
@@ -38,16 +44,39 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             val nome = binding.editName.text.toString()
             val presence = binding.radioPresent.isChecked
 
-            val model = GuestModel(0,nome , presence)
+            val model = GuestModel(guestId ,nome , presence)
 
-            viewModel.insert(model)
+
+                viewModel.save(model)
+
+                finish()
+
         }
+    }
+
+    private fun observe(){
+        viewModel.guest.observe(this, Observer {
+            binding.editName.setText(it.name)
+            if (it.presence) {
+                binding.radioPresent.isChecked = true
+            } else {
+                binding.radioAbsent.isChecked = true
+            }
+        })
+
+        viewModel.saveGuest.observe(this, Observer {
+            if(it != ""){
+                Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        })
+
     }
 
     private fun loadData(){
         val bundle = intent.extras
         if (bundle != null){
-            val guestId = bundle.getInt(DataBaseConstants.GUEST.ID)
+            guestId = bundle.getInt(DataBaseConstants.GUEST.ID)
             viewModel.get(guestId)
         }
     }

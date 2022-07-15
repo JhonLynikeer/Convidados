@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.trkgames.convidadosudemy.model.GuestModel
 import com.trkgames.convidadosudemy.repository.GuestRepository
 
-class AllGuestsViewModel(application: Application) : AndroidViewModel(application) {
+class GuestsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: GuestRepository = GuestRepository.getInstance(application.applicationContext)
 
@@ -17,6 +17,14 @@ class AllGuestsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getAll(){
         listAllGuests.value = repository.getAll()
+    }
+
+    fun getAbsent(){
+        listAllGuests.value = repository.getAbsent()
+    }
+
+    fun getPresent(){
+        listAllGuests.value = repository.getPresent()
     }
 
     fun delete(id: Int){

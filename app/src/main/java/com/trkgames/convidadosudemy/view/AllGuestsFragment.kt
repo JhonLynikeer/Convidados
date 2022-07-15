@@ -5,31 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.trkgames.convidadosudemy.constants.DataBaseConstants
 import com.trkgames.convidadosudemy.databinding.FragmentAllGuestsBinding
 import com.trkgames.convidadosudemy.view.adapter.GuestAdapter
 import com.trkgames.convidadosudemy.view.listener.OnGuestListener
-import com.trkgames.convidadosudemy.viewmodel.AllGuestsViewModel
+import com.trkgames.convidadosudemy.viewmodel.GuestsViewModel
 
 
 class AllGuestsFragment : Fragment() {
 
     private var _binding: FragmentAllGuestsBinding? = null
-    private lateinit var viewModel: AllGuestsViewModel
+    private lateinit var viewModel: GuestsViewModel
     private val adapter = GuestAdapter()
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, b: Bundle? ): View {
 
-        viewModel = ViewModelProvider(this).get(AllGuestsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(GuestsViewModel::class.java)
         _binding = FragmentAllGuestsBinding.inflate(inflater, container, false)
 
         //Layout
@@ -61,13 +56,15 @@ class AllGuestsFragment : Fragment() {
 
         adapter.attachListener(listener)
 
-        viewModel.getAll()
-
         observe()
 
         return binding.root
     }
 
+    override fun onResume(){
+        super.onResume()
+        viewModel.getAll()
+    }
 
 
     override fun onDestroyView() {
